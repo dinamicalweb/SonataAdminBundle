@@ -295,7 +295,7 @@ suit this scenario.
 In this example, you would have two ``admin_list`` blocks on your dashboard, each
 of them containing the respectively configured groups.
 
-.. _`SonataBlock documentation page`: https://sonata-project.org/bundles/block/master/doc/index.html
+.. _`SonataBlock documentation page`: https://docs.sonata-project.org/projects/SonataBlockBundle/en/3.x/
 
 Statistic Block
 ~~~~~~~~~~~~~~~
@@ -318,7 +318,7 @@ counter is related to the filters from one admin
                         type:     sonata.admin.block.stats   # block id
                         settings:
                             code:  sonata.page.admin.page    # admin code - service id
-                            icon:  fa-magic                  # font awesome icon
+                            icon:  fa fa-magic               # font awesome icon
                             text:  app.page.stats            # static text or translation message
                             color: bg-yellow                 # colors: bg-green, bg-red and bg-aqua
                             filters:                         # filter values
@@ -366,7 +366,7 @@ A preview block can be used to display a brief of an admin list.
                         type:     sonata.admin.block.admin_preview # block id
                         settings:
                             code:  sonata.page.admin.page          # admin code - service id
-                            icon:  fa-magic                        # font awesome icon
+                            icon:  fa fa-magic                     # font awesome icon
                             limit: 10
                             text:  Latest Edited Pages
                             filters:                               # filter values

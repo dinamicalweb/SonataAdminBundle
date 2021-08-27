@@ -74,15 +74,39 @@ parameters:
 
         -
             # will be fixed in v4. Currently BC break
-            message: "#^Method Sonata\\\\AdminBundle\\\\Admin\\\\AdminInterface\\<object\\>\\:\\:getFormGroups\\(\\) invoked with 1 parameter, 0 required\\.$#"
+            message: "#^Method Sonata\\\\AdminBundle\\\\Admin\\\\AdminInterface\\<T of object\\>\\:\\:getFormGroups\\(\\) invoked with 1 parameter, 0 required\\.$#"
             count: 1
             path: src/Form/FormMapper.php
 
         -
             # will be fixed in v4. Currently BC break
-            message: "#^Method Sonata\\\\AdminBundle\\\\Admin\\\\AdminInterface\\<object\\>\\:\\:getFormTabs\\(\\) invoked with 1 parameter, 0 required\\.$#"
+            message: "#^Method Sonata\\\\AdminBundle\\\\FieldDescription\\\\FieldDescriptionInterface\\:\\:getLabel\\(\\) invoked with 1 parameter, 0 required\\.$#"
+            count: 1
+            path: src/Show/ShowMapper.php
+
+        -
+            # will be fixed in v4. Currently BC break
+            message: "#^Method Sonata\\\\AdminBundle\\\\Admin\\\\AdminInterface\\<T of object\\>\\:\\:getShowGroups\\(\\) invoked with 1 parameter, 0 required\\.$#"
+            count: 1
+            path: src/Show/ShowMapper.php
+
+        -
+            # will be fixed in v4. Currently BC break
+            message: "#^Method Sonata\\\\AdminBundle\\\\Admin\\\\AdminInterface\\<T of object\\>\\:\\:getShowTabs\\(\\) invoked with 1 parameter, 0 required\\.$#"
+            count: 1
+            path: src/Show/ShowMapper.php
+
+        -
+            # will be fixed in v4. Currently BC break
+            message: "#^Method Sonata\\\\AdminBundle\\\\Admin\\\\AdminInterface\\<T of object\\>\\:\\:getFormTabs\\(\\) invoked with 1 parameter, 0 required\\.$#"
             count: 1
             path: src/Form/FormMapper.php
+
+        -
+            # will be fixed in v4.
+            message: "#^Right side of && is always true\\.$#"
+            count: 1
+            path: src/Mapper/BaseGroupedMapper.php
 
         -
             # will be fixed in v4. Currently BC break
@@ -167,6 +191,11 @@ parameters:
             message: "#^Class Sonata\\\\AdminBundle\\\\Datagrid\\\\Pager implements generic interface Iterator but does not specify its types\\: TKey, TValue$#"
             count: 1
             path: src/Datagrid/Pager.php
+
+        -
+            message: "#^Method Sonata\\\\AdminBundle\\\\Admin\\\\AdminInterface\\<object\\>\\:\\:setParent\\(\\) invoked with 2 parameters, 1 required\\.$#"
+            count: 1
+            path: src/Admin/AbstractAdmin.php
 
 # Symfony related errors
         -

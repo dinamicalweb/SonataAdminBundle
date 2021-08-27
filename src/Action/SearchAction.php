@@ -33,6 +33,8 @@ final class SearchAction
     private $pool;
 
     /**
+     * NEXT_MAJOR: Remove this property.
+     *
      * @var SearchHandler
      */
     private $searchHandler;
@@ -56,6 +58,7 @@ final class SearchAction
 
     public function __construct(
         Pool $pool,
+        // NEXT_MAJOR: Remove next line.
         SearchHandler $searchHandler,
         TemplateRegistryInterface $templateRegistry,
         // NEXT_MAJOR: Remove next line.
@@ -63,6 +66,7 @@ final class SearchAction
         Environment $twig
     ) {
         $this->pool = $pool;
+        // NEXT_MAJOR: Remove next line.
         $this->searchHandler = $searchHandler;
         $this->templateRegistry = $templateRegistry;
         // NEXT_MAJOR: Remove next line.
@@ -70,14 +74,17 @@ final class SearchAction
         $this->twig = $twig;
     }
 
-    /**
-     * The search action first render an empty page, if the query is set, then the template generates
-     * some ajax request to retrieve results for each admin. The Ajax query returns a JSON response.
-     *
-     * @return JsonResponse|Response
-     */
     public function __invoke(Request $request): Response
     {
+        if (null !== $request->get('admin')) {
+            @trigger_error(
+                'Passing an "admin" parameter in the request is deprecated since sonata-project/admin-bundle 3.104'
+                .' and will be ignored in 4.0.',
+                \E_USER_DEPRECATED
+            );
+        }
+
+        // NEXT_MAJOR: Remove the condition and always return the response.
         if (!$request->get('admin') || !$request->isXmlHttpRequest()) {
             return new Response($this->twig->render($this->templateRegistry->getTemplate('search'), [
                 'base_template' => $request->isXmlHttpRequest() ?
@@ -92,6 +99,7 @@ final class SearchAction
             ]));
         }
 
+        // NEXT_MAJOR: Remove all this code.
         try {
             $admin = $this->pool->getAdminByAdminCode($request->get('admin'));
         } catch (ServiceNotFoundException $e) {

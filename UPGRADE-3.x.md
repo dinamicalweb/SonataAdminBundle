@@ -1,6 +1,68 @@
 UPGRADE 3.x
 ===========
 
+UPGRADE FROM 3.104 to 3.105
+===========================
+
+### Deprecated the use of ParamConverter to fetch an admin as parameter
+
+Using `@ParamConverter` annotation to fetch an admin service is deprecated and will not work in version 4.0. Instead,
+you MUST type-hint with the appropriate admin class.
+
+The `Sonata\AdminBundle\Request\ParamConverter\AdminParamConverter` class has been deprecated.
+
+Before:
+```php
+final class MyController
+{
+    /**
+     * @ParamConverter("admin", class="App\Admin\MyAdmin")
+     */
+    public function custom($admin): Response
+    {
+        return new Response();
+    }
+}
+```
+
+After:
+```php
+use App\Admin\MyAdmin;
+
+final class MyController
+{
+    public function custom(MyAdmin $admin): Response
+    {
+        return new Response();
+    }
+}
+```
+
+UPGRADE FROM 3.102 to 3.103
+===========================
+
+### `Sonata\AdminBundle\Search\SearchHandler`
+
+"or_group" option is not set anymore to filters implementing `Sonata\AdminBundle\Filter\ChainableFilterInterface`.
+If you are using custom filters and want to use them in the search, you SHOULD implement
+this interface on each one.
+
+### 'icon' option
+
+We used multiple icon option with different format:
+- `<i class="fa fa-plus"></i>`
+- `fa fa-plus`
+- `fa-plus`
+- `plus`
+
+The last two format are now deprecated.  Since we've fixed the deprecation in the code,
+if you've overriden some template, be sure to always render the icons with the new `parse_icon` filter.
+
+### `Sonata\AdminBundle\Form\FormMapper`
+
+Deprecated passing `collection` as argument 2 for `FormMapper::add()` method. You MUST pass
+`Symfony\Component\Form\Extension\Core\Type\CollectionType` or `Sonata\AdminBundle\Form\Type\CollectionType` instead.
+
 UPGRADE FROM 3.97 to 3.98
 =========================
 
@@ -1179,7 +1241,7 @@ The Twig extension method that fallback to a default template when the specified
 You can no longer rely on that and should always specify templates that exist.
 
 ## Deprecated AbstractAdmin methods
-- `buildBreacrumbs` is deprecated, and no replacement is given, it will become an internal method.
+- `buildBreadcrumbs` is deprecated, and no replacement is given, it will become an internal method.
 - `getBreadcrumbs` is deprecated in favor of the homonym method of the `sonata.admin.breadcrumbs_builder` service.
 - The breadcrumbs builder accessors are deprecated,
 the `sonata.admin.breadcrumbs_builder` service should be used directly instead.

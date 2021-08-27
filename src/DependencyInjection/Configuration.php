@@ -39,6 +39,7 @@ class Configuration implements ConfigurationInterface
         $rootNode = $treeBuilder->getRootNode();
         \assert($rootNode instanceof ArrayNodeDefinition);
 
+        // NEXT_MAJOR: Remove this line.
         $caseSensitiveInfo = <<<'CASESENSITIVE'
 Whether the global search should behave case sensitive or not.
 Using case-insensitivity might lead to performance issues.
@@ -111,7 +112,9 @@ CASESENSITIVE;
                                 ->thenInvalid('Configuration value of "global_search.empty_boxes" must be one of show, fade or hide.')
                             ->end()
                         ->end()
+                        // NEXT_MAJOR: Remove this option.
                         ->booleanNode('case_sensitive')
+                            ->setDeprecated('The "%node%" option is deprecated since sonata-project/admin-bundle 3.103.')
                             ->defaultTrue()
                             ->info($caseSensitiveInfo)
                         ->end()
@@ -172,13 +175,25 @@ CASESENSITIVE;
                             ->info('Label Catalogue used for admin services if one isn\'t provided.')
                         ->end()
                         ->scalarNode('default_icon')
-                            ->defaultValue('<i class="fa fa-folder"></i>')
+                            ->defaultValue('fa fa-folder')
                             ->info('Icon used for admin services if one isn\'t provided.')
                         ->end()
                         ->integerNode('dropdown_number_groups_per_colums')->defaultValue(2)->end()
+                        // NEXT_MAJOR: Remove this option.
                         ->enumNode('title_mode')
+                            ->setDeprecated('The "%node%" option is deprecated since sonata-project/admin-bundle 3.104. Use "logo_content" instead.')
                             ->values(['single_text', 'single_image', 'both'])
                             ->defaultValue('both')
+                            ->cannotBeEmpty()
+                        ->end()
+                        ->enumNode('logo_content')
+                            ->values(['text', 'icon', 'all'])
+                            ->defaultValue('all')
+                            ->cannotBeEmpty()
+                        ->end()
+                        ->enumNode('list_action_button_content')
+                            ->values(['text', 'icon', 'all'])
+                            ->defaultValue('all')
                             ->cannotBeEmpty()
                         ->end()
                         ->booleanNode('lock_protection')

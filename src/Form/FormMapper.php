@@ -27,6 +27,9 @@ use Symfony\Component\Form\FormBuilderInterface;
  * @final since sonata-project/admin-bundle 3.52
  *
  * @author Thomas Rabaix <thomas.rabaix@sonata-project.org>
+ *
+ * @phpstan-template T of object
+ * @phpstan-extends BaseGroupedMapper<T>
  */
 class FormMapper extends BaseGroupedMapper
 {
@@ -44,9 +47,13 @@ class FormMapper extends BaseGroupedMapper
      * NEXT_MAJOR: Make the property private.
      *
      * @var AdminInterface
+     * @phpstan-var AdminInterface<T>
      */
     protected $admin;
 
+    /**
+     * @phpstan-param AdminInterface<T> $admin
+     */
     public function __construct(
         FormContractorInterface $formContractor,
         FormBuilderInterface $formBuilder,
@@ -70,6 +77,8 @@ class FormMapper extends BaseGroupedMapper
     }
 
     /**
+     * NEXT_MAJOR: Restrict the type of the $name parameter to string.
+     *
      * @param FormBuilderInterface|string $name
      * @param string|null                 $type
      * @param array<string, mixed>        $options
@@ -87,7 +96,18 @@ class FormMapper extends BaseGroupedMapper
             return $this;
         }
 
+        // NEXT_MAJOR: Only keep the else part.
         if ($name instanceof FormBuilderInterface) {
+            @trigger_error(
+                sprintf(
+                    'Passing a %s instance as first param of %s is deprecated since sonata-project/admin-bundle 3.103'
+                    .' and will throw an exception in 4.0. You should pass a string instead.',
+                    FormBuilderInterface::class,
+                    __METHOD__
+                ),
+                \E_USER_DEPRECATED
+            );
+
             $fieldName = $name->getName();
         } else {
             $fieldName = $name;
@@ -101,9 +121,20 @@ class FormMapper extends BaseGroupedMapper
             $fieldName = $this->sanitizeFieldName($fieldName);
         }
 
-        // change `collection` to `sonata_type_native_collection` form type to
-        // avoid BC break problems
+        // NEXT_MAJOR: Remove the check with "collection".
         if ('collection' === $type || SymfonyCollectionType::class === $type) {
+            // NEXT_MAJOR Remove this "if" block.
+            if ('collection' === $type) {
+                @trigger_error(sprintf(
+                    'Passing "collection" as argument 2 for "%s()" is deprecated since'
+                    .' sonata-project/admin-bundle 3.103 and will not work in version 4.0.'
+                    .' You MUST pass "%s" or "%s" instead.',
+                    __METHOD__,
+                    SymfonyCollectionType::class,
+                    CollectionType::class
+                ), \E_USER_DEPRECATED);
+            }
+
             $type = CollectionType::class;
         }
 

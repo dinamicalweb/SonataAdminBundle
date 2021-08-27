@@ -19,9 +19,11 @@ use PHPUnit\Framework\TestCase;
 use Sonata\AdminBundle\Action\GetShortObjectDescriptionAction;
 use Sonata\AdminBundle\Action\RetrieveAutocompleteItemsAction;
 use Sonata\AdminBundle\Admin\AbstractAdmin;
+use Sonata\AdminBundle\Admin\AdminInterface;
 use Sonata\AdminBundle\Datagrid\DatagridInterface;
 use Sonata\AdminBundle\Datagrid\PagerInterface;
 use Sonata\AdminBundle\FieldDescription\FieldDescriptionInterface;
+use Sonata\AdminBundle\Filter\Filter;
 use Sonata\AdminBundle\Object\MetadataInterface;
 use Sonata\AdminBundle\Request\AdminFetcherInterface;
 use Sonata\AdminBundle\Tests\Fixtures\Filter\FooFilter;
@@ -199,9 +201,14 @@ final class RetrieveAutocompleteItemsActionTest extends TestCase
 
         $response = ($this->action)($request);
 
+        self::assertSame(Filter::CONDITION_OR, $filter->getCondition());
+        self::assertNull($filter->getPreviousFilter());
+        self::assertSame(Filter::CONDITION_OR, $filter2->getCondition());
+        self::assertSame($filter, $filter2->getPreviousFilter());
+
         $this->assertInstanceOf(Response::class, $response);
         $this->assertSame('application/json', $response->headers->get('Content-Type'));
-        $this->assertSame('{"status":"OK","more":false,"items":[{"id":123,"label":"FOO"}]}', $response->getContent());
+        $this->assertSame('{"status":"OK","more":false,"items":[{"id":123,"label":"FOO","foo":"bar"}]}', $response->getContent());
     }
 
     public function testRetrieveAutocompleteItemsComplexProperty(): void
@@ -332,7 +339,11 @@ final class RetrieveAutocompleteItemsActionTest extends TestCase
             ['items_per_page', null, 10],
             ['req_param_name_page_number', null, DatagridInterface::PAGE],
             ['target_admin_access_action', null, 'list'],
-            ['response_item_callback', null, null],
+            ['response_item_callback', null, static function (AdminInterface $admin, object $model, array $item): array {
+                $item['foo'] = 'bar';
+
+                return $item;
+            }],
         ]);
     }
 }

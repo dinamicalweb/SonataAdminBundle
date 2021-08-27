@@ -40,6 +40,8 @@ final class SearchActionTest extends TestCase
     private $pool;
 
     /**
+     * NEXT_MAJOR: Remove this property.
+     *
      * @var SearchHandler
      */
     private $searchHandler;
@@ -77,6 +79,7 @@ final class SearchActionTest extends TestCase
 
         $this->action = new SearchAction(
             $this->pool,
+            // NEXT_MAJOR: Remove next line.
             $this->searchHandler,
             $templateRegistry,
             // NEXT_MAJOR: Remove next line.
@@ -101,6 +104,11 @@ final class SearchActionTest extends TestCase
         $this->assertInstanceOf(Response::class, ($this->action)($request));
     }
 
+    /**
+     * NEXT_MAJOR: Remove this test.
+     *
+     * @group legacy
+     */
     public function testAjaxCall(): void
     {
         $adminCode = 'code';

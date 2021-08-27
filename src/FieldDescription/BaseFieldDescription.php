@@ -623,9 +623,6 @@ abstract class BaseFieldDescription implements FieldDescriptionInterface
         return null !== $this->admin;
     }
 
-    /**
-     * @final since sonata-project/admin-bundle 3.99.
-     */
     public function mergeOption($name, array $options = [])
     {
         if (!isset($this->options[$name])) {
@@ -640,10 +637,15 @@ abstract class BaseFieldDescription implements FieldDescriptionInterface
     }
 
     /**
-     * @final since sonata-project/admin-bundle 3.99.
+     * NEXT_MAJOR: Remove this method.
      */
     public function mergeOptions(array $options = [])
     {
+        @trigger_error(sprintf(
+            'The "%s()" method is deprecated since version 3.103 and will be removed in 4.0.',
+            __METHOD__
+        ), \E_USER_DEPRECATED);
+
         $this->setOptions(array_merge_recursive($this->options, $options));
     }
 

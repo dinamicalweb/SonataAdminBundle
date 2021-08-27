@@ -557,6 +557,8 @@ abstract class AbstractAdmin extends AbstractTaggedAdmin implements AdminInterfa
 
     /**
      * NEXT_MAJOR: Remove this method.
+     *
+     * @deprecated since sonata-project/admin-bundle 3.82, use configureFormOptions() to set $formOptions['constraints'] instead.
      */
     public function validate(ErrorElement $errorElement, $object)
     {
@@ -856,32 +858,53 @@ abstract class AbstractAdmin extends AbstractTaggedAdmin implements AdminInterfa
      * Returns the name of the parent related field, so the field can be use to set the default
      * value (ie the parent object) or to filter the object.
      *
-     * @throws \InvalidArgumentException
+     * @throws \LogicException
      *
      * @return string|null
      */
     public function getParentAssociationMapping()
     {
-        // NEXT_MAJOR: remove array check
-        if (\is_array($this->parentAssociationMapping) && $this->isChild()) {
-            $parent = $this->getParent()->getCode();
+        if (!$this->isChild()) {
+            // NEXT_MAJOR: Uncomment the exception.
+            @trigger_error(sprintf(
+                'Calling %s() when the admin is not a child admin is deprecated since sonata-project/admin-bundle 3.103'
+                .' and will throw a %s exception in 4.0.',
+                __METHOD__,
+                \LogicException::class
+            ), \E_USER_DEPRECATED);
+//            throw new \LogicException(sprintf(
+//                'Admin "%s" has no parent.',
+//                static::class
+//            ));
 
-            if (\array_key_exists($parent, $this->parentAssociationMapping)) {
-                return $this->parentAssociationMapping[$parent];
-            }
-
-            throw new \InvalidArgumentException(sprintf(
-                'There\'s no association between %s and %s.',
-                $this->getCode(),
-                $this->getParent()->getCode()
-            ));
+            return $this->parentAssociationMapping;
         }
 
-        // NEXT_MAJOR: remove this line
-        return $this->parentAssociationMapping;
+        $parent = $this->getParent()->getCode();
+
+        // NEXT_MAJOR: remove this.
+        if (!\is_array($this->parentAssociationMapping)) {
+            return $this->parentAssociationMapping;
+        }
+
+        // NEXT_MAJOR: Return $this->parentAssociationMapping[$parent] without checks.
+        if (\array_key_exists($parent, $this->parentAssociationMapping)) {
+            return $this->parentAssociationMapping[$parent];
+        }
+
+        // NEXT_MAJOR: Remove this exception
+        throw new \InvalidArgumentException(sprintf(
+            'There\'s no association between "%s" and "%s".',
+            $this->getCode(),
+            $this->getParent()->getCode()
+        ));
     }
 
     /**
+     * NEXT_MAJOR: Remove this method.
+     *
+     * @deprecated since sonata-project/admin-bundle 3.103 and will be removed in 4.0.
+     *
      * @param string $code
      * @param string $value
      */
@@ -893,6 +916,11 @@ abstract class AbstractAdmin extends AbstractTaggedAdmin implements AdminInterfa
                 __METHOD__
             ), \E_USER_DEPRECATED);
         }
+
+        @trigger_error(sprintf(
+            'Method "%s()" is deprecated since sonata-project/admin-bundle 3.103 and will be removed in 4.0.',
+            __METHOD__
+        ), \E_USER_DEPRECATED);
 
         $this->parentAssociationMapping[$code] = $value;
     }
@@ -2254,15 +2282,14 @@ EOT;
 
         $this->children[$child->getCode()] = $child;
 
-        $child->setParent($this);
-
         // NEXT_MAJOR: remove $args and add $field parameter to this function on next Major
 
         $args = \func_get_args();
 
         if (isset($args[1])) {
-            $child->addParentAssociationMapping($this->getCode(), $args[1]);
+            $child->setParent($this, $args[1]);
         } else {
+            $child->setParent($this);
             @trigger_error(
                 'Calling "addChild" without second argument is deprecated since sonata-project/admin-bundle 3.35 and will not be allowed in 4.0.',
                 \E_USER_DEPRECATED
@@ -2312,11 +2339,38 @@ EOT;
     }
 
     /**
+     * NEXT_MAJOR: Uncomment the `$parentAssociationMapping` argument.
+     *
      * @final since sonata-project/admin-bundle 3.102.
      */
-    public function setParent(AdminInterface $parent)
+    public function setParent(AdminInterface $parent/*, string $parentAssociationMapping*/)
     {
         $this->parent = $parent;
+
+        // NEXT_MAJOR: Uncomment the following line
+        // $this->parentAssociationMapping[$parent->getCode()] = $parentAssociationMapping;
+
+        // NEXT_MAJOR: Remove next line.
+        $args = \func_get_args();
+
+        // NEXT_MAJOR: Remove this entire if-else block.
+        if (\array_key_exists(1, $args)) {
+            if (!\is_string($args[1])) {
+                throw new \TypeError(sprintf(
+                    'Argument 2 passed to "%s()" must be of the type string, "%s" given.',
+                    __METHOD__,
+                    \is_object($args[1]) ? \get_class($args[1]) : \gettype($args[1])
+                ));
+            }
+
+            $this->parentAssociationMapping[$parent->getCode()] = $args[1];
+        } else {
+            @trigger_error(sprintf(
+                'Not passing argument 2 to "%s()" is deprecated since'
+                .' sonata-project/admin-bundle 3.103 and will not be allowed in 4.0.',
+                __METHOD__
+            ), \E_USER_DEPRECATED);
+        }
     }
 
     /**
@@ -3210,7 +3264,7 @@ EOT;
                 'template' => $this->getTemplate('action_create'),
                 // 'template' => $this->getTemplateRegistry()->getTemplate('action_create'),
                 'url' => $this->generateUrl('create'),
-                'icon' => 'plus-circle',
+                'icon' => 'fa fa-plus-circle',
             ];
         }
 
@@ -3219,7 +3273,7 @@ EOT;
                 'label' => 'link_list',
                 'translation_domain' => 'SonataAdminBundle',
                 'url' => $this->generateUrl('list'),
-                'icon' => 'list',
+                'icon' => 'fa fa-list',
             ];
         }
 
@@ -3510,18 +3564,30 @@ EOT;
         return $formOptions;
     }
 
+    /**
+     * @phpstan-param FormMapper<T> $form
+     */
     protected function configureFormFields(FormMapper $form)
     {
     }
 
+    /**
+     * @phpstan-param ListMapper<T> $list
+     */
     protected function configureListFields(ListMapper $list)
     {
     }
 
+    /**
+     * @phpstan-param DatagridMapper<T> $filter
+     */
     protected function configureDatagridFilters(DatagridMapper $filter)
     {
     }
 
+    /**
+     * @phpstan-param ShowMapper<T> $show
+     */
     protected function configureShowFields(ShowMapper $show)
     {
     }
@@ -3533,9 +3599,9 @@ EOT;
     /**
      * Allows you to customize batch actions.
      *
-     * @param array<string, mixed> $actions List of actions
+     * @param array<string, array<string, mixed>> $actions List of actions
      *
-     * @return array<string, mixed>
+     * @return array<string, array<string, mixed>>
      */
     protected function configureBatchActions($actions)
     {
@@ -3643,22 +3709,16 @@ EOT;
         $mapper = new ListMapper($this->getListBuilder(), $this->list, $this);
 
         if (\count($this->getBatchActions()) > 0 && $this->hasRequest() && !$this->getRequest()->isXmlHttpRequest()) {
-            $fieldDescription = $this->createFieldDescription(
-                ListMapper::NAME_BATCH,
-                [
-                    'label' => 'batch',
-                    // NEXT_MAJOR: Remove this code.
-                    'code' => '_batch',
-                    'sortable' => false,
-                    'virtual_field' => true,
-                ]
-            );
-
-            // NEXT_MAJOR: Remove this line and use commented line below it instead
-            $fieldDescription->setTemplate($this->getTemplate('batch'));
-            // $fieldDescription->setTemplate($this->getTemplateRegistry()->getTemplate('batch'));
-
-            $mapper->add($fieldDescription, ListMapper::TYPE_BATCH);
+            $mapper->add(ListMapper::NAME_BATCH, ListMapper::TYPE_BATCH, [
+                'label' => 'batch',
+                // NEXT_MAJOR: Remove this code.
+                'code' => '_batch',
+                'sortable' => false,
+                'virtual_field' => true,
+                // NEXT_MAJOR: Remove this line and use commented line below it instead
+                'template' => $this->getTemplate('batch'),
+                // 'template' => $this->getTemplateRegistry()->getTemplate('batch'),
+            ]);
         }
 
         $this->configureListFields($mapper);
@@ -3668,22 +3728,16 @@ EOT;
         }
 
         if ($this->hasRequest() && $this->getRequest()->isXmlHttpRequest()) {
-            $fieldDescription = $this->createFieldDescription(
-                ListMapper::NAME_SELECT,
-                [
-                    'label' => false,
-                    // NEXT_MAJOR: Remove this code.
-                    'code' => '_select',
-                    'sortable' => false,
-                    'virtual_field' => false,
-                ]
-            );
-
-            // NEXT_MAJOR: Remove this line and use commented line below it instead
-            $fieldDescription->setTemplate($this->getTemplate('select'));
-            // $fieldDescription->setTemplate($this->getTemplateRegistry()->getTemplate('select'));
-
-            $mapper->add($fieldDescription, ListMapper::TYPE_SELECT);
+            $mapper->add(ListMapper::NAME_SELECT, ListMapper::TYPE_SELECT, [
+                'label' => false,
+                // NEXT_MAJOR: Remove this code.
+                'code' => '_select',
+                'sortable' => false,
+                'virtual_field' => false,
+                // NEXT_MAJOR: Remove this line and use commented line below it instead
+                'template' => $this->getTemplate('select'),
+                // 'template' => $this->getTemplateRegistry()->getTemplate('select'),
+            ]);
         }
     }
 

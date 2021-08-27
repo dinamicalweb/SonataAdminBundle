@@ -16,6 +16,7 @@ use Sonata\AdminBundle\Admin\BreadcrumbsBuilder;
 use Sonata\AdminBundle\Admin\BreadcrumbsBuilderInterface;
 use Sonata\AdminBundle\Admin\Extension\LockExtension;
 use Sonata\AdminBundle\Admin\Pool;
+use Sonata\AdminBundle\ArgumentResolver\AdminValueResolver;
 use Sonata\AdminBundle\Controller\HelperController;
 use Sonata\AdminBundle\DependencyInjection\Compiler\AliasDeprecatedPublicServicesCompilerPass;
 use Sonata\AdminBundle\Event\AdminEventExtension;
@@ -311,6 +312,7 @@ return static function (ContainerConfigurator $containerConfigurator): void {
             // NEXT_MAJOR: Remove public and sonata.container.private tag.
             ->public()
             ->tag(AliasDeprecatedPublicServicesCompilerPass::PRIVATE_TAG_NAME, ['version' => '3.98'])
+            // NEXT_MAJOR: Remove the args.
             ->args([
                 '%sonata.admin.configuration.global_search.case_sensitive%',
             ])
@@ -393,5 +395,11 @@ return static function (ContainerConfigurator $containerConfigurator): void {
                 new ReferenceConfigurator('sonata.admin.pool'),
             ])
 
-        ->alias(AdminFetcherInterface::class, 'sonata.admin.request.fetcher');
+        ->alias(AdminFetcherInterface::class, 'sonata.admin.request.fetcher')
+
+        ->set('sonata.admin.argument_resolver.admin', AdminValueResolver::class)
+            ->args([
+                new ReferenceConfigurator('sonata.admin.request.fetcher'),
+            ])
+            ->tag('controller.argument_value_resolver');
 };

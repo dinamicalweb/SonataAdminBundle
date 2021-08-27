@@ -27,6 +27,10 @@ use Sonata\AdminBundle\Mapper\MapperInterface;
  * @final since sonata-project/admin-bundle 3.52
  *
  * @author Thomas Rabaix <thomas.rabaix@sonata-project.org>
+ *
+ * @phpstan-template T of object
+ * @phpstan-implements MapperInterface<T>
+ * @phpstan-extends BaseMapper<T>
  */
 class DatagridMapper extends BaseMapper implements MapperInterface
 {
@@ -44,9 +48,13 @@ class DatagridMapper extends BaseMapper implements MapperInterface
      * NEXT_MAJOR: Make the property private.
      *
      * @var AdminInterface
+     * @phpstan-var AdminInterface<T>
      */
     protected $admin;
 
+    /**
+     * @phpstan-param AdminInterface<T> $admin
+     */
     public function __construct(
         DatagridBuilderInterface $datagridBuilder,
         DatagridInterface $datagrid,
@@ -63,7 +71,7 @@ class DatagridMapper extends BaseMapper implements MapperInterface
     }
 
     /**
-     * NEXT_MAJOR: Change signature for ($name, ?string $type = null, array $filterOptions = [], array $fieldDescriptionOptions = []).
+     * NEXT_MAJOR: Change signature for (string $name, ?string $type = null, array $filterOptions = [], array $fieldDescriptionOptions = []).
      *
      * @param FieldDescriptionInterface|string $name
      * @param string|null                      $type
@@ -117,7 +125,18 @@ class DatagridMapper extends BaseMapper implements MapperInterface
             $fieldDescriptionOptions = $deprecatedFieldDescriptionOptions;
         }
 
+        // NEXT_MAJOR: Only keep the elseif part.
         if ($name instanceof FieldDescriptionInterface) {
+            @trigger_error(
+                sprintf(
+                    'Passing a %s instance as first param of %s is deprecated since sonata-project/admin-bundle 3.103'
+                    .' and will throw an exception in 4.0. You should pass a string instead.',
+                    FieldDescriptionInterface::class,
+                    __METHOD__
+                ),
+                \E_USER_DEPRECATED
+            );
+
             $fieldDescription = $name;
             $fieldDescription->mergeOptions($filterOptions);
         } elseif (\is_string($name)) {

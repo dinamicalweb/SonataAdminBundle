@@ -2,6 +2,69 @@
 All notable changes to this project will be documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org/).
 
+## [3.105.0](https://github.com/sonata-project/SonataAdminBundle/compare/3.104.0...3.105.0) - 2021-08-07
+### Added
+- [[#7356](https://github.com/sonata-project/SonataAdminBundle/pull/7356)] Added support for `psr/log` ^2.0. ([@jordisala1991](https://github.com/jordisala1991))
+
+### Deprecated
+- [[#7362](https://github.com/sonata-project/SonataAdminBundle/pull/7362)] Deprecated using `@ParamConverter` annotation for injecting admin services ([@franmomu](https://github.com/franmomu))
+
+### Fixed
+- [[#7363](https://github.com/sonata-project/SonataAdminBundle/pull/7363)] Requesting a non existent service "sonata.admin.exporter.do-not-use". ([@VincentLanglet](https://github.com/VincentLanglet))
+- [[#7360](https://github.com/sonata-project/SonataAdminBundle/pull/7360)] `RetrieveAutocompleItemsAction` when used with an array of property ([@VincentLanglet](https://github.com/VincentLanglet))
+
+## [3.104.0](https://github.com/sonata-project/SonataAdminBundle/compare/3.103.0...3.104.0) - 2021-07-20
+### Added
+- [[#7325](https://github.com/sonata-project/SonataAdminBundle/pull/7325)] Option `list_action_button_content` ([@VincentLanglet](https://github.com/VincentLanglet))
+- [[#7299](https://github.com/sonata-project/SonataAdminBundle/pull/7299)] Added support for non admin prefixed `ROLE_*` roles by the RoleSecurityHandler ([@VincentLanglet](https://github.com/VincentLanglet))
+- [[#7306](https://github.com/sonata-project/SonataAdminBundle/pull/7306)] New `block` twig in order to override the button display by the admin in the base_edit_form ([@VincentLanglet](https://github.com/VincentLanglet))
+
+### Changed
+- [[#7320](https://github.com/sonata-project/SonataAdminBundle/pull/7320)] `response_item_callback` callback signature ([@VincentLanglet](https://github.com/VincentLanglet))
+
+### Deprecated
+- [[#7325](https://github.com/sonata-project/SonataAdminBundle/pull/7325)] Option `title_mode`. Use `logo_content` instead ([@VincentLanglet](https://github.com/VincentLanglet))
+- [[#7290](https://github.com/sonata-project/SonataAdminBundle/pull/7290)] Passing `admin` in the request of search action ([@VincentLanglet](https://github.com/VincentLanglet))
+
+### Fixed
+- [[#7335](https://github.com/sonata-project/SonataAdminBundle/pull/7335)] Crash on choice field inline edition with a 0 value ([@soullivaneuh](https://github.com/soullivaneuh))
+- [[#7332](https://github.com/sonata-project/SonataAdminBundle/pull/7332)] Accessing on non existent array keys `translation_domain` ([@VincentLanglet](https://github.com/VincentLanglet))
+- [[#7320](https://github.com/sonata-project/SonataAdminBundle/pull/7320)] `response_item_callback` option of ModelAutocompleteFilter ([@VincentLanglet](https://github.com/VincentLanglet))
+
+## [3.103.0](https://github.com/sonata-project/SonataAdminBundle/compare/3.102.0...3.103.0) - 2021-07-11
+### Added
+- [[#7308](https://github.com/sonata-project/SonataAdminBundle/pull/7308)] `ChainableFilterInterface` ([@VincentLanglet](https://github.com/VincentLanglet))
+- [[#7285](https://github.com/sonata-project/SonataAdminBundle/pull/7285)] Added deprecated annotation to AbstractAdmin validate() method. ([@7ochem](https://github.com/7ochem))
+- [[#7275](https://github.com/sonata-project/SonataAdminBundle/pull/7275)] SearchableFilterInterface ([@VincentLanglet](https://github.com/VincentLanglet))
+- [[#7283](https://github.com/sonata-project/SonataAdminBundle/pull/7283)] Added `IconExtension` twig extension. ([@VincentLanglet](https://github.com/VincentLanglet))
+- [[#7283](https://github.com/sonata-project/SonataAdminBundle/pull/7283)] Added `parse_icon` filter. ([@VincentLanglet](https://github.com/VincentLanglet))
+- [[#7279](https://github.com/sonata-project/SonataAdminBundle/pull/7279)] Add generic to MapperInterface and all extending classes. ([@VincentLanglet](https://github.com/VincentLanglet))
+- [[#7279](https://github.com/sonata-project/SonataAdminBundle/pull/7279)] Added generic to ConfigureEvent and PersistenceEvent. ([@VincentLanglet](https://github.com/VincentLanglet))
+
+### Deprecated
+- [[#7301](https://github.com/sonata-project/SonataAdminBundle/pull/7301)] Not passing argument 2 of `Symfony\Component\Form\FormRegistryInterface` to `AbstractFormContractor::__construct` ([@dmaicher](https://github.com/dmaicher))
+- [[#7275](https://github.com/sonata-project/SonataAdminBundle/pull/7275)] Passing `global_search` option to a filter which does not implements `SearchableFilterInterface`. ([@VincentLanglet](https://github.com/VincentLanglet))
+- [[#7275](https://github.com/sonata-project/SonataAdminBundle/pull/7275)] `sonata_admin.global_search.case_sensitive` configuration. ([@VincentLanglet](https://github.com/VincentLanglet))
+- [[#7282](https://github.com/sonata-project/SonataAdminBundle/pull/7282)] `AbstractAdmin::addParentAssociationMapping()` method. ([@VincentLanglet](https://github.com/VincentLanglet))
+- [[#7282](https://github.com/sonata-project/SonataAdminBundle/pull/7282)] Calling `AdminInterface::setParent()` without second argument. ([@VincentLanglet](https://github.com/VincentLanglet))
+- [[#7282](https://github.com/sonata-project/SonataAdminBundle/pull/7282)] Calling `AdminInterface::getParentAssociationMapping()` for a non parent admin. ([@VincentLanglet](https://github.com/VincentLanglet))
+- [[#7265](https://github.com/sonata-project/SonataAdminBundle/pull/7265)] Passing a FieldDescriptionInterface as first argument of method `ListMapper::add`. ([@VincentLanglet](https://github.com/VincentLanglet))
+- [[#7265](https://github.com/sonata-project/SonataAdminBundle/pull/7265)] Passing a FieldDescriptionInterface as first argument of method `ShowMapper::add`. ([@VincentLanglet](https://github.com/VincentLanglet))
+- [[#7265](https://github.com/sonata-project/SonataAdminBundle/pull/7265)] Passing a FieldDescriptionInterface as first argument of method `DatagridMapper::add`. ([@VincentLanglet](https://github.com/VincentLanglet))
+- [[#7265](https://github.com/sonata-project/SonataAdminBundle/pull/7265)] Passing a FormBuilderInterface as first argument of method `FormMapper::add`. ([@VincentLanglet](https://github.com/VincentLanglet))
+- [[#7265](https://github.com/sonata-project/SonataAdminBundle/pull/7265)] `FieldDescriptionInterface::mergeOptions()`. ([@VincentLanglet](https://github.com/VincentLanglet))
+- [[#7265](https://github.com/sonata-project/SonataAdminBundle/pull/7265)] `BaseFieldDescription::mergeOptions()`. ([@VincentLanglet](https://github.com/VincentLanglet))
+- [[#7283](https://github.com/sonata-project/SonataAdminBundle/pull/7283)] Passing an `icon` option with the format `fa-plus` or `plus`, use the format `fa fa-plus` or pass directly the `<i>` html instead. ([@VincentLanglet](https://github.com/VincentLanglet))
+- [[#7267](https://github.com/sonata-project/SonataAdminBundle/pull/7267)] Deprecated passing `collection` as argument 2 of `FormMapper::add()` method ([@franmomu](https://github.com/franmomu))
+
+### Fixed
+- [[#7301](https://github.com/sonata-project/SonataAdminBundle/pull/7301)] Default options are added correctly to form types that use the Symfony way of extending Sonata's default types ([@dmaicher](https://github.com/dmaicher))
+- [[#7287](https://github.com/sonata-project/SonataAdminBundle/pull/7287)] `FieldCollection::reorder()` and `Datagrid::reorderFilter()` methods. ([@VincentLanglet](https://github.com/VincentLanglet))
+- [[#7254](https://github.com/sonata-project/SonataAdminBundle/pull/7254)] Filters are correctly updated if only default values are submitted. ([@VincentLanglet](https://github.com/VincentLanglet))
+- [[#7277](https://github.com/sonata-project/SonataAdminBundle/pull/7277)] Respect `false` as translation_domain for tab and action buttons. ([@VincentLanglet](https://github.com/VincentLanglet))
+- [[#7264](https://github.com/sonata-project/SonataAdminBundle/pull/7264)] `Max_per_page` drowpdown propagate correctly the `sort_by` filter value ([@VincentLanglet](https://github.com/VincentLanglet))
+- [[#7271](https://github.com/sonata-project/SonataAdminBundle/pull/7271)] Do not try to translate fieldDescription label when false is provided as translation domain. ([@VincentLanglet](https://github.com/VincentLanglet))
+
 ## [3.102.0](https://github.com/sonata-project/SonataAdminBundle/compare/3.101.0...3.102.0) - 2021-06-21
 ### Deprecated
 - [[#7266](https://github.com/sonata-project/SonataAdminBundle/pull/7266)] Overriding `AbstractAdmin::getDataSourceIterator()` ([@VincentLanglet](https://github.com/VincentLanglet))

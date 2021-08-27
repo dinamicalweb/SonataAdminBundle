@@ -48,6 +48,7 @@ return static function (ContainerConfigurator $containerConfigurator): void {
             ->public()
             ->args([
                 new ReferenceConfigurator('sonata.admin.pool'),
+                // NEXT_MAJOR: Remove next line.
                 new ReferenceConfigurator('sonata.admin.search.handler'),
                 new ReferenceConfigurator('sonata.admin.global_template_registry'),
                 // NEXT_MAJOR: Remove next line.

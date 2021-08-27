@@ -25,6 +25,9 @@ use Sonata\AdminBundle\Mapper\BaseGroupedMapper;
  * @final since sonata-project/admin-bundle 3.52
  *
  * @author Thomas Rabaix <thomas.rabaix@sonata-project.org>
+ *
+ * @phpstan-template T of object
+ * @phpstan-extends BaseGroupedMapper<T>
  */
 class ShowMapper extends BaseGroupedMapper
 {
@@ -42,9 +45,13 @@ class ShowMapper extends BaseGroupedMapper
      * NEXT_MAJOR: Make the property private.
      *
      * @var AdminInterface
+     * @phpstan-var AdminInterface<T> $admin
      */
     protected $admin;
 
+    /**
+     * @phpstan-param AdminInterface<T> $admin
+     */
     public function __construct(
         ShowBuilderInterface $showBuilder,
         FieldDescriptionCollection $list,
@@ -56,6 +63,8 @@ class ShowMapper extends BaseGroupedMapper
     }
 
     /**
+     * NEXT_MAJOR: Restrict the type of the $name parameter to string.
+     *
      * @param FieldDescriptionInterface|string $name
      * @param string|null                      $type
      * @param array<string, mixed>             $fieldDescriptionOptions
@@ -74,7 +83,18 @@ class ShowMapper extends BaseGroupedMapper
 
         $this->addFieldToCurrentGroup($fieldKey);
 
+        // NEXT_MAJOR: Keep only the elseif part.
         if ($name instanceof FieldDescriptionInterface) {
+            @trigger_error(
+                sprintf(
+                    'Passing a %s instance as first param of %s is deprecated since sonata-project/admin-bundle 3.103'
+                    .' and will throw an exception in 4.0. You should pass a string instead.',
+                    FieldDescriptionInterface::class,
+                    __METHOD__
+                ),
+                \E_USER_DEPRECATED
+            );
+
             $fieldDescription = $name;
             $fieldDescription->mergeOptions($fieldDescriptionOptions);
         } elseif (\is_string($name)) {

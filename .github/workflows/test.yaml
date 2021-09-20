@@ -9,7 +9,7 @@ on:
         branches:
             - 3.x
             - 4.x
-            - master
+            - 5.x
     pull_request:
 
 jobs:
@@ -70,14 +70,17 @@ jobs:
               if: matrix.variant != 'normal' && !startsWith(matrix.variant, 'symfony/symfony')
               run: composer require ${{ matrix.variant }} --no-update
 
+            - name: Allow unstable dependencies
+              run: composer config minimum-stability dev
+
             - name: "Install Composer dependencies (${{ matrix.dependencies }})"
               uses: "ramsey/composer-install@v1"
               with:
                   dependency-versions: "${{ matrix.dependencies }}"
                   composer-options: "--prefer-dist --prefer-stable"
 
-            - name: Run Tests
-              run: make test
+            - name: Run Tests with coverage
+              run: make coverage
 
             - name: Send coverage to Codecov
               uses: codecov/codecov-action@v1
